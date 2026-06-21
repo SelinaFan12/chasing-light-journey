@@ -1,0 +1,55 @@
+<view class="page captions-page {{themeClass}}">
+  <view class="top-panel panel">
+    <view class="eyebrow">灵感文案</view>
+    <view class="display-title">把打卡照，写成一句<text class="accent">记忆</text></view>
+    <view class="muted">选择语气，输入地点、天气或心情，从文案库里匹配一句适合分享的短句。</view>
+  </view>
+
+  <view class="generator panel">
+    <view class="style-filter">
+      <button
+        wx:for="{{styleTabs}}"
+        wx:key="value"
+        class="chip {{activeStyle === item.value ? 'active' : ''}}"
+        data-style="{{item.value}}"
+        bindtap="setStyle"
+      >{{item.label}}</button>
+    </view>
+
+    <view class="input-row">
+      <input
+        value="{{keyword}}"
+        placeholder="输入地点、天气、心情"
+        placeholder-class="placeholder"
+        bindinput="onKeyword"
+      />
+      <button
+        class="primary-button"
+        loading="{{isSearching}}"
+        disabled="{{isSearching}}"
+        bindtap="searchCaptionLibrary"
+      >{{isSearching ? '匹配中' : '匹配'}}</button>
+    </view>
+
+    <view wx:if="{{matchedCaption}}" class="custom-result">
+      <view class="eyebrow">匹配结果</view>
+      <view>{{matchedCaption}}</view>
+      <button class="secondary-button" data-text="{{matchedCaption}}" bindtap="copyCaption">复制</button>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <view>
+      <view class="eyebrow">可直接复制</view>
+      <view class="section-title">灵感文案</view>
+    </view>
+  </view>
+
+  <view class="caption-list">
+    <view wx:for="{{captions}}" wx:key="*this" class="caption-card panel">
+      <view class="mono caption-no">0{{index + 1}}</view>
+      <view class="caption-text">{{item}}</view>
+      <button class="secondary-button" data-text="{{item}}" bindtap="copyCaption">复制</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,32 @@
+{
+  "mode": "import",
+  "records": [
+    {
+      "poiId": "xhs-photo-001",
+      "name": "外滩夜景拍照点",
+      "city": "上海",
+      "address": "上海市黄浦区中山东一路",
+      "latitude": 31.239692,
+      "longitude": 121.499763,
+      "coverImage": "cloud://你的环境ID/authorized/bund-cover.jpg",
+      "coverCredit": "已授权创作者昵称",
+      "sourceUrl": "小红书笔记链接或授权记录链接",
+      "reviewStatus": "approved",
+      "summary": "外滩热门真人打卡机位，适合夜景人像和城市封面。",
+      "bestTime": "18:30-20:00",
+      "locations": [
+        {
+          "name": "外白渡桥南侧",
+          "desc": "桥体线条自带纵深，能同时带到陆家嘴天际线。",
+          "time": "18:40-19:30",
+          "tip": "人物站桥侧 45 度，保留车流光轨。",
+          "type": "远景",
+          "caseImage": "cloud://你的环境ID/authorized/bund-case-01.jpg",
+          "caseImageCredit": "已授权创作者昵称",
+          "caseSourceName": "小红书授权图片",
+          "caseSourceUrl": "小红书笔记链接或授权记录链接"
+        }
+      ]
+    }
+  ]
+}

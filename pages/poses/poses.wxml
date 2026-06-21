@@ -1,0 +1,40 @@
+<view class="page poses-page {{themeClass}}">
+  <view class="top-panel panel">
+    <view class="eyebrow">POSE ARCHIVE</view>
+    <view class="display-title">让身体动作，也有<text class="accent">构图</text></view>
+    <view class="muted">按场景筛选姿势，把“我该怎么站”变成可直接照做的拍摄动作。</view>
+  </view>
+
+  <view class="chip-row category-row">
+    <button
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="chip {{activeCategory === item ? 'active' : ''}}"
+      data-category="{{item}}"
+      bindtap="setCategory"
+    >{{item}}</button>
+  </view>
+
+  <view class="pose-grid">
+    <view wx:for="{{visiblePoses}}" wx:key="id" class="pose-card panel">
+      <view class="pose-media">
+        <image
+          class="pose-photo"
+          src="{{item.image}}"
+          mode="aspectFit"
+          lazy-load="true"
+        />
+        <view class="pose-photo-shade"></view>
+        <view class="pose-no mono">{{item.no}}</view>
+      </view>
+      <view class="pose-body">
+        <view class="pose-title">{{item.title}}</view>
+        <view class="muted">{{item.desc}}</view>
+        <view class="pose-foot">
+          <text class="mono">{{item.category}}</text>
+          <text>{{item.scene}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

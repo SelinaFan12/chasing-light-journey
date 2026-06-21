@@ -1,0 +1,8 @@
+{
+  "name": "generate-caption",
+  "version": "1.0.0",
+  "description": "Generate travel photo captions with Volcengine Ark Doubao.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {}
+}

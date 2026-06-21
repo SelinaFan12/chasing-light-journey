@@ -1,0 +1,10 @@
+{
+  "name": "sync-xhs-data",
+  "version": "1.0.0",
+  "description": "Sync authorized Xiaohongshu POI/imported records into spots collection.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

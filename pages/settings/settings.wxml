@@ -1,0 +1,39 @@
+<view class="page settings-page {{themeClass}}">
+  <view class="settings-hero panel">
+    <view class="hero-copy">
+      <view class="eyebrow">SETTINGS</view>
+      <view class="display-title">偏好<text class="accent">设置</text></view>
+      <view class="muted">管理界面模式和本地保存的浏览记录。</view>
+    </view>
+    <view class="hero-badge mono">{{isLightTheme ? 'LIGHT' : 'DARK'}}</view>
+  </view>
+
+  <view class="settings-list">
+    <view class="panel setting-card theme-card">
+      <view class="setting-icon mono">01</view>
+      <view class="setting-main">
+        <view class="sub-title">界面模式</view>
+        <view class="muted">当前：{{themeText}}，适合不同光线下查看机位。</view>
+      </view>
+      <button class="setting-action" bindtap="toggleThemeMode">{{isLightTheme ? '深色' : '白色'}}</button>
+    </view>
+
+    <view class="panel setting-card">
+      <view class="setting-icon mono">02</view>
+      <view class="setting-main">
+        <view class="sub-title">浏览历史</view>
+        <view class="muted">本机已保存 {{historyCount}} 条记录。</view>
+      </view>
+      <button class="setting-action muted-action" bindtap="clearHistoryData">清空</button>
+    </view>
+
+    <view class="panel setting-card">
+      <view class="setting-icon mono">03</view>
+      <view class="setting-main">
+        <view class="sub-title">本地缓存</view>
+        <view class="muted">清理浏览历史和收藏记录，保留界面模式。</view>
+      </view>
+      <button class="setting-action muted-action" bindtap="clearLocalCache">清理</button>
+    </view>
+  </view>
+</view>

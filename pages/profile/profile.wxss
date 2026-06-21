@@ -1,0 +1,149 @@
+.profile-page {
+  padding-top: 24rpx;
+}
+
+.profile-hero {
+  min-height: 360rpx;
+  padding: 34rpx;
+  display: grid;
+  grid-template-columns: 124rpx minmax(0, 1fr);
+  gap: 28rpx;
+  align-items: end;
+}
+
+.avatar {
+  width: 124rpx;
+  height: 124rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid rgba(242, 210, 138, 0.6);
+  border-radius: 50%;
+  color: #f2d28a;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.avatar-image {
+  display: block;
+  object-fit: cover;
+}
+
+.profile-hero .display-title {
+  margin: 14rpx 0 18rpx;
+}
+
+.login-button {
+  margin-top: 22rpx;
+}
+
+.record-grid {
+  margin-top: 22rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14rpx;
+}
+
+.record {
+  padding: 22rpx;
+}
+
+.record-value {
+  margin-bottom: 8rpx;
+  color: #f7f0df;
+  font-size: 34rpx;
+}
+
+.theme-panel {
+  margin-top: 18rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.theme-switch {
+  min-width: 172rpx;
+  min-height: 68rpx;
+  padding: 14rpx 22rpx;
+  border: 1rpx solid rgba(229, 180, 95, 0.48);
+  border-radius: 999rpx;
+  color: #f2d28a;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.theme-switch.active {
+  background: rgba(229, 180, 95, 0.16);
+}
+
+.favorite {
+  margin-bottom: 16rpx;
+  padding: 24rpx;
+  display: grid;
+  grid-template-columns: 120rpx 1fr;
+  gap: 20rpx;
+}
+
+.favorite-no {
+  color: #8f887d;
+  font-size: 22rpx;
+}
+
+.action-list {
+  display: grid;
+  gap: 16rpx;
+}
+
+.action {
+  width: 100%;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  text-align: left;
+}
+
+.action > view:first-child {
+  min-width: 0;
+}
+
+.share-action {
+  border-color: rgba(229, 180, 95, 0.38);
+}
+
+.arrow {
+  color: #e5b45f;
+  font-size: 34rpx;
+}
+
+.theme-light .avatar {
+  border-color: rgba(185, 133, 47, 0.6);
+  color: #8a611f;
+}
+
+.theme-light .record-value,
+.theme-light .favorite .sub-title,
+.theme-light .action .sub-title {
+  color: #27231d;
+}
+
+.theme-light .favorite-no {
+  color: #80776c;
+}
+
+.theme-light .theme-switch {
+  border-color: #b9852f;
+  color: #7b5517;
+}
+
+.theme-light .theme-switch.active {
+  background: rgba(229, 180, 95, 0.2);
+}
+
+.theme-light .arrow {
+  color: #9a671d;
+}

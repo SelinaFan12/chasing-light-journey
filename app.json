@@ -1,0 +1,60 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/poses/poses",
+    "pages/captions/captions",
+    "pages/profile/profile",
+    "pages/browse-history/browse-history",
+    "pages/settings/settings",
+    "pages/spot-detail/spot-detail"
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "window": {
+    "navigationBarTitleText": "追光旅迹",
+    "navigationBarBackgroundColor": "#121217",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#121217"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于根据我所在城市和大致位置推荐附近拍照景点"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getFuzzyLocation"
+  ],
+  "tabBar": {
+    "color": "#8d8a82",
+    "selectedColor": "#f2d28a",
+    "backgroundColor": "#121217",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "机位",
+        "iconPath": "assets/tabbar/spot-normal.png",
+        "selectedIconPath": "assets/tabbar/spot-active.png"
+      },
+      {
+        "pagePath": "pages/poses/poses",
+        "text": "姿势",
+        "iconPath": "assets/tabbar/poses-normal.png",
+        "selectedIconPath": "assets/tabbar/poses-active.png"
+      },
+      {
+        "pagePath": "pages/captions/captions",
+        "text": "文案",
+        "iconPath": "assets/tabbar/captions-normal.png",
+        "selectedIconPath": "assets/tabbar/captions-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile-normal.png",
+        "selectedIconPath": "assets/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

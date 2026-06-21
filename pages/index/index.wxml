@@ -1,0 +1,157 @@
+<view class="page home-page {{themeClass}}">
+  <view class="hero panel">
+    <view class="hero-meta">
+      <view class="eyebrow">CHASING LIGHT JOURNEY</view>
+      <view class="live-row">
+        <view class="dot"></view>
+        <text>{{dataSourceText}}</text>
+      </view>
+    </view>
+    <view class="display-title">把旅途的<text class="accent">光</text>，落到正确机位</view>
+    <view class="hero-copy">全国城市、热门地标、小众街区和自然风景，一起整理成可筛选、可收藏、可导航的旅行摄影档案。</view>
+    <view class="hero-stats">
+      <view wx:for="{{stats}}" wx:key="label" class="stat">
+        <view class="stat-value mono">{{item.value}}</view>
+        <view class="muted">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="search-panel panel">
+    <view class="mode-row">
+      <button
+        class="mode-button {{recommendMode === 'nearby' ? 'active' : ''}}"
+        loading="{{locationLoading}}"
+        bindtap="useNearby"
+      >附近推荐</button>
+      <button
+        class="mode-button {{recommendMode === 'plan' ? 'active' : ''}}"
+        bindtap="setPlanMode"
+      >提前规划</button>
+    </view>
+    <view class="location-line mono">{{locationText}}</view>
+    <view class="search-label mono">SEARCH / CITY FILTER</view>
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索景点、城市、路线、标签"
+      placeholder-class="placeholder"
+      bindinput="onSearch"
+    />
+    <view class="filter-label mono">THEME</view>
+    <view class="chip-row theme-row">
+      <button
+        wx:for="{{themeFilters}}"
+        wx:key="*this"
+        class="chip {{activeTheme === item ? 'active' : ''}}"
+        data-theme="{{item}}"
+        bindtap="selectTheme"
+      >{{item}}</button>
+    </view>
+    <view class="filter-label mono">PROVINCE / REGION</view>
+    <view class="chip-row province-row">
+      <button
+        wx:for="{{provinces}}"
+        wx:key="*this"
+        class="chip {{activeProvince === item ? 'active' : ''}}"
+        data-province="{{item}}"
+        bindtap="selectProvince"
+      >{{item}}</button>
+    </view>
+    <view class="filter-label mono">CITY</view>
+    <view class="chip-row">
+      <button
+        wx:for="{{cities}}"
+        wx:key="*this"
+        class="chip {{activeCity === item ? 'active' : ''}}"
+        data-city="{{item}}"
+        bindtap="selectCity"
+      >{{item}}</button>
+    </view>
+  </view>
+
+  <scroll-view class="quick-scroll" scroll-x show-scrollbar="false">
+    <view class="quick-track">
+      <button class="quick panel" bindtap="goPoses">
+        <text class="mono">GUIDE 01</text>
+        <view>姿势库</view>
+      </button>
+      <button class="quick panel" bindtap="goCaptions">
+        <text class="mono">GUIDE 02</text>
+        <view>文案库</view>
+      </button>
+      <button class="quick panel" bindtap="useNearby">
+        <text class="mono">GUIDE 03</text>
+        <view>附近机位</view>
+      </button>
+    </view>
+  </scroll-view>
+
+  <view class="section-head">
+    <view>
+      <view class="eyebrow">I / TRAVEL SPOTS</view>
+      <view class="section-title">旅行点位</view>
+    </view>
+    <view class="muted">{{filteredSpots.length}} / {{filteredTotal}} 处</view>
+  </view>
+
+  <view class="spot-list">
+    <view
+      wx:for="{{filteredSpots}}"
+      wx:key="id"
+      class="spot-card panel"
+      data-id="{{item.id}}"
+      bindtap="openSpot"
+    >
+      <view class="spot-media {{item.coverImage ? 'has-photo' : ''}}" style="background: {{item.coverStyle}};">
+        <image wx:if="{{item.coverImage}}" class="spot-cover-img" src="{{item.coverImage}}" mode="aspectFill" lazy-load="true"></image>
+        <view wx:if="{{item.coverImage}}" class="spot-cover-shade"></view>
+        <view class="photo-mark mono">{{item.archiveNo}}</view>
+        <view wx:if="{{!item.coverImage}}" class="photo-sun"></view>
+        <view wx:if="{{!item.coverImage}}" class="photo-line"></view>
+        <view wx:if="{{!item.coverImage}}" class="photo-subject"></view>
+        <view class="photo-caption mono">{{item.coverImage ? item.imageLabel : 'POSE CASE'}}</view>
+      </view>
+      <view class="spot-main">
+        <view class="spot-top">
+          <view>
+            <view class="spot-city mono">{{item.city}} · {{item.badge}}</view>
+            <view class="spot-name">{{item.name}}</view>
+            <view class="source-line mono">{{item.sourceLabel}}</view>
+          </view>
+          <view class="score-box">
+            <view class="score mono">{{item.score}}</view>
+            <view wx:if="{{recommendMode === 'nearby' && item.distanceText}}" class="distance mono">{{item.distanceText}}</view>
+          </view>
+        </view>
+        <view class="muted">{{item.summary}}</view>
+        <view class="tag-strip">
+          <view wx:for="{{item.displayTags}}" wx:key="*this" class="mini-tag">{{item}}</view>
+        </view>
+        <view class="spot-foot">
+          <view class="palette">
+            <view wx:for="{{item.palette}}" wx:key="*this" class="swatch" style="background: {{item}};"></view>
+          </view>
+          <button
+            class="fav {{item.favorited ? 'active' : ''}}"
+            data-id="{{item.id}}"
+            catchtap="toggleFavorite"
+          >{{item.favorited ? '已收藏' : '收藏'}}</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <button
+    wx:if="{{filteredSpots.length < filteredTotal}}"
+    class="load-more panel"
+    bindtap="loadMoreSpots"
+  >
+    继续显示 {{remainingCount}} 处
+  </button>
+
+  <view wx:if="{{filteredSpots.length === 0}}" class="empty panel">
+    <view class="sub-title">没找到匹配机位</view>
+    <view class="muted">换一个城市或关键词试试。</view>
+  </view>
+</view>

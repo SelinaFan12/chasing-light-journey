@@ -1,0 +1,37 @@
+<view class="page browse-history-page {{themeClass}}">
+  <view class="history-hero panel">
+    <view>
+      <view class="eyebrow">BROWSE TRACE</view>
+      <view class="display-title">最近看过的<text class="accent">机位</text></view>
+      <view class="muted">自动记录你打开过的地点，方便回头继续规划路线。</view>
+    </view>
+    <button wx:if="{{history.length}}" class="secondary-button clear-button" bindtap="clearAll">清空</button>
+  </view>
+
+  <view class="history-list">
+    <view
+      wx:for="{{history}}"
+      wx:key="id"
+      class="history-card panel"
+      data-id="{{item.id}}"
+      bindtap="openSpot"
+    >
+      <view class="history-cover {{item.coverImage ? 'has-photo' : ''}}">
+        <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill"></image>
+        <view wx:else class="history-empty mono">{{item.archiveNo}}</view>
+        <view wx:if="{{item.imageLabel}}" class="image-label mono">{{item.imageLabel}}</view>
+      </view>
+      <view class="history-body">
+        <view class="history-meta mono">{{item.city}} · {{item.badge}}</view>
+        <view class="sub-title">{{item.name}}</view>
+        <view class="muted">{{item.summary}}</view>
+        <view class="history-time mono">{{item.viewedText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{history.length === 0}}" class="empty panel">
+    <view class="sub-title">还没有浏览记录</view>
+    <view class="muted">打开任意机位详情后，会自动出现在这里。</view>
+  </view>
+</view>

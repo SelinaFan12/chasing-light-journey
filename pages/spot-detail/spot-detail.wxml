@@ -1,0 +1,143 @@
+<view wx:if="{{spot}}" class="page detail-page {{themeClass}}">
+  <view class="detail-hero panel">
+    <view class="hero-line">
+      <text class="eyebrow">{{spot.archiveNo}} / LOCATION FILE</text>
+      <view class="score mono">{{spot.score}}</view>
+    </view>
+    <view class="display-title">{{spot.name}}</view>
+    <view class="hero-copy">{{spot.summary}}</view>
+    <view class="hero-meta-row">
+      <view class="meta-grid">
+        <view>
+          <view class="mono meta-label">CITY</view>
+          <view>{{spot.city}}</view>
+        </view>
+        <view>
+          <view class="mono meta-label">BEST LIGHT</view>
+          <view>{{spot.bestTime}}</view>
+        </view>
+      </view>
+      <button class="fav-button {{isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">{{isFavorite ? '已收藏' : '收藏机位'}}</button>
+    </view>
+  </view>
+
+  <view wx:if="{{spot.aiExampleImage}}" class="ai-example panel">
+    <image class="ai-example-img" src="{{spot.aiExampleImage}}" mode="aspectFill" lazy-load="true"></image>
+    <view class="ai-example-shade"></view>
+    <view class="ai-example-top">
+      <view class="eyebrow">{{spot.aiExampleLabel}}</view>
+      <view class="mono">REFERENCE</view>
+    </view>
+    <view class="ai-example-copy">{{spot.aiExamplePrompt}}</view>
+  </view>
+
+  <view class="section-head">
+    <view>
+      <view class="eyebrow">现场怎么拍</view>
+      <view class="section-title">推荐机位</view>
+    </view>
+    <view class="muted">{{spot.locations.length}} 处</view>
+  </view>
+
+  <view class="location-list">
+    <view wx:for="{{spot.locations}}" wx:key="name" class="location-card panel">
+      <view class="location-no mono">0{{index + 1}}</view>
+      <view class="location-body">
+        <view class="tag mono">{{item.type}} · {{item.time}}</view>
+        <view class="sub-title">{{item.name}}</view>
+        <view class="muted">{{item.desc}}</view>
+        <view wx:if="{{item.address}}" class="address-row">
+          <text class="mono">导航</text>
+          <view>{{item.address}}</view>
+        </view>
+        <view class="guide-points">
+          <view>
+            <text>拍出来</text>
+            <view>{{item.result}}</view>
+          </view>
+          <view>
+            <text>人站哪</text>
+            <view>{{item.stand}}</view>
+          </view>
+          <view>
+            <text>怎么拍</text>
+            <view>{{item.action}}</view>
+          </view>
+        </view>
+        <view wx:if="{{item.hasDedicatedCaseImage}}" class="case-photo">
+          <image class="case-photo-img" src="{{item.caseImage}}" mode="aspectFill" lazy-load="true"></image>
+          <view class="case-photo-shade"></view>
+          <view class="case-photo-top">
+            <view class="case-label mono">{{item.cue}}</view>
+            <view class="case-source mono">{{item.caseSourceLabel}}</view>
+          </view>
+          <view class="case-credit" wx:if="{{item.caseImageCredit}}">Photo: {{item.caseImageCredit}}</view>
+        </view>
+        <view wx:else class="case-visual visual-{{item.visual}} pose-{{item.pose}}" style="background: {{item.caseStyle}};">
+          <view class="case-label mono">{{item.cue}}</view>
+          <view class="rule-line vertical one"></view>
+          <view class="rule-line vertical two"></view>
+          <view class="rule-line horizontal one"></view>
+          <view class="rule-line horizontal two"></view>
+          <view class="case-frame"></view>
+          <view class="case-sun"></view>
+          <view class="case-horizon"></view>
+          <view class="case-building"></view>
+          <view class="case-bridge"></view>
+          <view class="case-water"></view>
+          <view class="case-tree"></view>
+          <view class="case-path"></view>
+          <view class="case-railing"></view>
+          <view class="case-person">
+            <view class="person-head"></view>
+            <view class="person-body"></view>
+            <view class="person-arm"></view>
+            <view class="person-leg front"></view>
+            <view class="person-leg back"></view>
+          </view>
+          <view class="case-visual-note">{{item.diagramNote}}</view>
+        </view>
+        <view class="angle-grid">
+          <view>
+            <view class="mono angle-label">构图</view>
+            <view>{{item.angle}}</view>
+          </view>
+          <view>
+            <view class="mono angle-label">镜头</view>
+            <view>{{item.lens}}</view>
+          </view>
+          <view>
+            <view class="mono angle-label">站位</view>
+            <view>{{item.direction}}</view>
+          </view>
+        </view>
+        <view class="tip">
+          <view class="mono tip-label">照着拍</view>
+          <view>{{item.example}}</view>
+          <view class="shot-note">{{item.tip}}</view>
+        </view>
+        <button class="primary-button" data-index="{{index}}" bindtap="navigateTo">复制导航信息</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-grid">
+    <view class="panel info-card">
+      <view class="eyebrow">避坑</view>
+      <view class="sub-title">避坑提示</view>
+      <view wx:for="{{spot.tips}}" wx:key="*this" class="note-row">
+        <text class="mono">0{{index + 1}}</text>
+        <view>{{item}}</view>
+      </view>
+    </view>
+
+    <view class="panel info-card">
+      <view class="eyebrow">构图</view>
+      <view class="sub-title">构图技巧</view>
+      <view wx:for="{{spot.composition}}" wx:key="*this" class="note-row">
+        <text class="mono">0{{index + 1}}</text>
+        <view>{{item}}</view>
+      </view>
+    </view>
+  </view>
+</view>

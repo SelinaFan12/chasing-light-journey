@@ -1,0 +1,10 @@
+{
+  "name": "get-spots",
+  "version": "1.0.0",
+  "description": "Read approved chasing-light spots from cloud database.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
