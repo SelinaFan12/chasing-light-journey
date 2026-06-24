@@ -1,0 +1,10 @@
+{
+  "name": "amap-search",
+  "version": "1.0.0",
+  "description": "Proxy AMap Web Service POI search for Chasing Light Journey.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

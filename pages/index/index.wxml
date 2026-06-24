@@ -38,6 +38,14 @@
       placeholder-class="placeholder"
       bindinput="onSearch"
     />
+    <view class="amap-row">
+      <view class="amap-text mono">{{amapText}}</view>
+      <button
+        class="amap-button"
+        loading="{{amapLoading}}"
+        bindtap="loadAmapSpots"
+      >高德补充</button>
+    </view>
     <view class="filter-label mono">THEME</view>
     <view class="chip-row theme-row">
       <button
@@ -107,10 +115,7 @@
         <image wx:if="{{item.coverImage}}" class="spot-cover-img" src="{{item.coverImage}}" mode="aspectFill" lazy-load="true"></image>
         <view wx:if="{{item.coverImage}}" class="spot-cover-shade"></view>
         <view class="photo-mark mono">{{item.archiveNo}}</view>
-        <view wx:if="{{!item.coverImage}}" class="photo-sun"></view>
-        <view wx:if="{{!item.coverImage}}" class="photo-line"></view>
-        <view wx:if="{{!item.coverImage}}" class="photo-subject"></view>
-        <view class="photo-caption mono">{{item.coverImage ? item.imageLabel : 'POSE CASE'}}</view>
+        <view class="photo-caption mono">{{item.imageLabel}}</view>
       </view>
       <view class="spot-main">
         <view class="spot-top">

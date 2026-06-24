@@ -1,4 +1,5 @@
 const { getCachedSpots, loadSpots } = require('../../utils/spots-service');
+const { searchAmapSpots } = require('../../utils/amap-service');
 const { getThemeState } = require('../../utils/theme');
 
 const DEFAULT_VISIBLE_LIMIT = 60;
@@ -38,7 +39,7 @@ function buildCardSpot(spot, favoriteMap, distanceText = '') {
     coverImage: spot.coverImage,
     coverStyle: spot.coverStyle,
     archiveNo: spot.archiveNo,
-    imageLabel: spot.imageLabel,
+    imageLabel: spot.imageLabel || '拍摄参考',
     city: spot.city,
     badge: spot.badge,
     name: spot.name,
@@ -100,9 +101,24 @@ function formatDistance(distanceKm) {
   return `${Math.round(distanceKm)}km`;
 }
 
+function activeThemeToKeyword(theme) {
+  const keywordMap = {
+    Citywalk: 'Citywalk 街区 路线 拍照打卡',
+    美食: '美食 打卡',
+    夜景: '夜景 打卡',
+    古城: '古城 老街',
+    街拍: '街拍 小店 路牌',
+    亲水: '江边 湖边 公园',
+    山野: '公园 徒步 观景台'
+  };
+
+  return keywordMap[theme] || '';
+}
+
 Page({
   allSpots: initialSpots,
   searchTimer: null,
+  amapSpotIds: {},
 
   data: {
     ...getThemeState(),
@@ -117,6 +133,8 @@ Page({
     userLocation: null,
     locationText: '需要附近推荐时再开启定位',
     locationLoading: false,
+    amapLoading: false,
+    amapText: '可用高德补充真实地点',
     filteredSpots: initialFilteredSpots,
     filteredTotal: initialSpots.length,
     remainingCount: Math.max(initialSpots.length - initialFilteredSpots.length, 0),
@@ -308,9 +326,81 @@ Page({
     this.filterSpots();
   },
 
+  loadAmapSpots() {
+    const { keyword, activeCity, activeProvince, userLocation } = this.data;
+    const city = activeCity !== '全部' ? activeCity : '';
+    const fallbackKeyword = activeThemeToKeyword(this.data.activeTheme) || (activeProvince !== '全部' ? `${activeProvince} Citywalk 街区 路线` : 'Citywalk 街区 路线 拍照打卡');
+    const searchKeyword = keyword.trim() || fallbackKeyword;
+
+    this.setData({
+      amapLoading: true,
+      amapText: '正在从高德补充真实地点...'
+    });
+
+    searchAmapSpots({
+      keyword: searchKeyword,
+      city,
+      location: this.data.recommendMode === 'nearby' ? userLocation : null,
+      radius: 5000,
+      offset: 20
+    }).then(({ configured, spots, message }) => {
+      if (!configured) {
+        this.setData({
+          amapLoading: false,
+          amapText: '未配置高德 Key，已继续使用本地数据'
+        });
+        wx.showToast({ title: '请先配置高德Key', icon: 'none' });
+        return;
+      }
+
+      const newSpots = spots.filter((spot) => {
+        const key = String(spot.id);
+        if (this.amapSpotIds[key]) return false;
+        this.amapSpotIds[key] = true;
+        return true;
+      });
+
+      if (!newSpots.length) {
+        this.setData({
+          amapLoading: false,
+          amapText: message || '高德暂无新的匹配地点'
+        });
+        wx.showToast({ title: '暂无新地点', icon: 'none' });
+        return;
+      }
+
+      this.allSpots = newSpots.concat(this.allSpots);
+      const provinces = buildProvinces(this.allSpots);
+      const cities = buildCities(this.allSpots, this.data.activeProvince);
+
+      this.setData({
+        amapLoading: false,
+        amapText: `高德已补充 ${newSpots.length} 个真实地点`,
+        provinces,
+        cities,
+        dataSourceText: '本地 + 高德地点',
+        stats: buildStats(this.allSpots, provinces.length - 1)
+      });
+      this.filterSpots({ resetLimit: true });
+    }).catch((error) => {
+      this.setData({
+        amapLoading: false,
+        amapText: error.message || '高德地点读取失败'
+      });
+      wx.showToast({ title: '高德读取失败', icon: 'none' });
+    });
+  },
+
   openSpot(event) {
+    const id = String(event.currentTarget.dataset.id);
+    const spot = this.allSpots.find((item) => String(item.id) === id);
+
+    if (spot && id.indexOf('amap-') === 0) {
+      wx.setStorageSync(`temporarySpot:${id}`, spot);
+    }
+
     wx.navigateTo({
-      url: `/pages/spot-detail/spot-detail?id=${event.currentTarget.dataset.id}`
+      url: `/pages/spot-detail/spot-detail?id=${id}`
     });
   },
 

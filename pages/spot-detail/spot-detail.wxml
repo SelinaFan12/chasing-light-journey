@@ -22,13 +22,87 @@
   </view>
 
   <view wx:if="{{spot.aiExampleImage}}" class="ai-example panel">
-    <image class="ai-example-img" src="{{spot.aiExampleImage}}" mode="aspectFill" lazy-load="true"></image>
+    <image class="ai-example-bg" src="{{spot.aiExampleImage}}" mode="aspectFill" lazy-load="true"></image>
+    <image class="ai-example-img" src="{{spot.aiExampleImage}}" mode="aspectFit" lazy-load="true"></image>
     <view class="ai-example-shade"></view>
     <view class="ai-example-top">
       <view class="eyebrow">{{spot.aiExampleLabel}}</view>
       <view class="mono">REFERENCE</view>
     </view>
     <view class="ai-example-copy">{{spot.aiExamplePrompt}}</view>
+  </view>
+
+  <view wx:if="{{spot.routeMap}}" class="citywalk-map panel">
+    <view class="map-paper">
+      <view class="map-head">
+        <view>
+          <view class="eyebrow">CITYWALK MAP</view>
+          <view class="map-title">{{spot.routeMap.title}}</view>
+        </view>
+        <view class="compass mono">N</view>
+      </view>
+
+      <view class="route-summary">
+        <view>
+          <text class="mono">起点</text>
+          <view>{{spot.routeMap.start}}</view>
+        </view>
+        <view>
+          <text class="mono">终点</text>
+          <view>{{spot.routeMap.end}}</view>
+        </view>
+      </view>
+
+      <view class="route-stats">
+        <view>
+          <text class="mono">{{spot.routeMap.distanceText}}</text>
+          <view>全程</view>
+        </view>
+        <view>
+          <text class="mono">{{spot.routeMap.stopCount}}站</text>
+          <view>漫步</view>
+        </view>
+        <view>
+          <text class="mono">{{spot.routeMap.durationText}}</text>
+          <view>步行</view>
+        </view>
+      </view>
+
+      <view class="route-map-body">
+        <view class="route-line"></view>
+        <view
+          wx:for="{{spot.routeMap.nodes}}"
+          wx:key="no"
+          class="route-node {{item.side}}"
+        >
+          <view class="node-pin mono">{{item.no}}</view>
+          <view class="node-card">
+            <view class="node-title">{{item.name}}</view>
+            <view class="node-type mono">{{item.type}}</view>
+            <view class="node-desc">{{item.desc}}</view>
+          </view>
+          <view wx:if="{{item.segmentText}}" class="segment-distance">
+            <view class="mono">步行约 {{item.segmentText}}</view>
+            <text>预计 {{item.segmentTimeText}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="map-tips">
+        <view class="map-tip">
+          <text class="mono">鞋</text>
+          <view>建议穿舒适鞋，边走边拍。</view>
+        </view>
+        <view class="map-tip">
+          <text class="mono">光</text>
+          <view>上午或下午柔光更适合街拍。</view>
+        </view>
+        <view class="map-tip">
+          <text class="mono">行</text>
+          <view>每站只拍 2-3 张，别把路线走成打卡任务。</view>
+        </view>
+      </view>
+    </view>
   </view>
 
   <view class="section-head">
@@ -64,38 +138,15 @@
             <view>{{item.action}}</view>
           </view>
         </view>
-        <view wx:if="{{item.hasDedicatedCaseImage}}" class="case-photo">
-          <image class="case-photo-img" src="{{item.caseImage}}" mode="aspectFill" lazy-load="true"></image>
+        <view wx:if="{{item.hasCaseImage}}" class="case-photo">
+          <image class="case-photo-bg" src="{{item.caseImage}}" mode="aspectFill" lazy-load="true"></image>
+          <image class="case-photo-img" src="{{item.caseImage}}" mode="aspectFit" lazy-load="true"></image>
           <view class="case-photo-shade"></view>
           <view class="case-photo-top">
             <view class="case-label mono">{{item.cue}}</view>
             <view class="case-source mono">{{item.caseSourceLabel}}</view>
           </view>
           <view class="case-credit" wx:if="{{item.caseImageCredit}}">Photo: {{item.caseImageCredit}}</view>
-        </view>
-        <view wx:else class="case-visual visual-{{item.visual}} pose-{{item.pose}}" style="background: {{item.caseStyle}};">
-          <view class="case-label mono">{{item.cue}}</view>
-          <view class="rule-line vertical one"></view>
-          <view class="rule-line vertical two"></view>
-          <view class="rule-line horizontal one"></view>
-          <view class="rule-line horizontal two"></view>
-          <view class="case-frame"></view>
-          <view class="case-sun"></view>
-          <view class="case-horizon"></view>
-          <view class="case-building"></view>
-          <view class="case-bridge"></view>
-          <view class="case-water"></view>
-          <view class="case-tree"></view>
-          <view class="case-path"></view>
-          <view class="case-railing"></view>
-          <view class="case-person">
-            <view class="person-head"></view>
-            <view class="person-body"></view>
-            <view class="person-arm"></view>
-            <view class="person-leg front"></view>
-            <view class="person-leg back"></view>
-          </view>
-          <view class="case-visual-note">{{item.diagramNote}}</view>
         </view>
         <view class="angle-grid">
           <view>

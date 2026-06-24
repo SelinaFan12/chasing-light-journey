@@ -13,7 +13,9 @@
     "navigationBarTitleText": "追光旅迹",
     "navigationBarBackgroundColor": "#121217",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#121217"
+    "backgroundColor": "#f7f2e8",
+    "backgroundColorTop": "#f7f2e8",
+    "backgroundColorBottom": "#f7f2e8"
   },
   "permission": {
     "scope.userLocation": {
@@ -26,8 +28,8 @@
   "tabBar": {
     "color": "#8d8a82",
     "selectedColor": "#f2d28a",
-    "backgroundColor": "#121217",
-    "borderStyle": "black",
+    "backgroundColor": "#fffaf0",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",

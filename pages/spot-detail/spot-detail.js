@@ -2,6 +2,258 @@ const { getSpotById } = require('../../utils/spots-service');
 const { getThemeState } = require('../../utils/theme');
 const { recordSpotView } = require('../../utils/browse-history');
 
+const SCENE_CASE_IMAGES = [
+  {
+    pattern: /树荫|树影|梧桐|树下|树林|林荫/,
+    image: '/assets/poses/pose-26.jpg',
+    label: '树荫实拍'
+  },
+  {
+    pattern: /花墙|花丛|花枝|花园|花海/,
+    image: '/assets/poses/foreground-frame.jpg',
+    label: '花墙实拍'
+  },
+  {
+    pattern: /前景|树枝|门洞|窗格|框景/,
+    image: '/assets/poses/foreground-frame.jpg',
+    label: '前景实拍'
+  },
+  {
+    pattern: /街巷|街角|慢走|行走|Citywalk|路牌|转角|坡道|老街|小路/,
+    image: '/assets/poses/walking-burst.jpg',
+    label: '街拍实拍'
+  },
+  {
+    pattern: /台阶|楼梯|石阶|阶梯|上行/,
+    image: '/assets/poses/seated-space.jpg',
+    label: '台阶实拍'
+  },
+  {
+    pattern: /夜景|灯牌|橱窗|补光|亮灯|灯光|蓝调/,
+    image: '/assets/poses/pose-28.jpg',
+    label: '夜景实拍'
+  },
+  {
+    pattern: /海边|湖岸|水面|江面|河岸|亲水|码头|岸线/,
+    image: '/assets/poses/pose-20.jpg',
+    label: '水边实拍'
+  },
+  {
+    pattern: /山野|山峰|远山|峰林|观景台|远望|草地|云海|沙漠|沙丘|高原/,
+    image: '/assets/poses/back-view.jpg',
+    label: '山野实拍'
+  },
+  {
+    pattern: /墙|红墙|门窗|侧身|墙面|建筑立面/,
+    image: '/assets/poses/pose-13.jpg',
+    label: '墙边实拍'
+  },
+  {
+    pattern: /天际线|地标|全景|封面|主体完整|城市建筑|广场/,
+    image: '/assets/poses/pose-21.jpg',
+    label: '全景实拍'
+  },
+  {
+    pattern: /栏杆|扶栏|护栏|桥侧|桥上|桥梁|栈桥|江堤/,
+    image: '/assets/poses/hand-rail.jpg',
+    label: '栏杆实拍'
+  },
+  {
+    pattern: /半身|人像|侧脸|回头/,
+    image: '/assets/poses/side-look.jpg',
+    label: '人像实拍'
+  }
+];
+
+const SCENE_NAME_CASE_IMAGES = [
+  {
+    pattern: /树荫|树影|梧桐|树下|树林|林荫/,
+    image: '/assets/poses/pose-26.jpg',
+    label: '树荫实拍'
+  },
+  {
+    pattern: /花墙|花丛|花枝|花园|花海/,
+    image: '/assets/poses/foreground-frame.jpg',
+    label: '花墙实拍'
+  },
+  {
+    pattern: /前景|树枝|门洞|窗格|框景/,
+    image: '/assets/poses/foreground-frame.jpg',
+    label: '前景实拍'
+  },
+  {
+    pattern: /街巷|街角|慢走|行走|Citywalk|路牌|转角|坡道|老街|小路/,
+    image: '/assets/poses/walking-burst.jpg',
+    label: '街拍实拍'
+  },
+  {
+    pattern: /台阶|楼梯|石阶|阶梯|上行/,
+    image: '/assets/poses/seated-space.jpg',
+    label: '台阶实拍'
+  },
+  {
+    pattern: /天际线|地标|全景|封面|主体完整|城市建筑|广场/,
+    image: '/assets/poses/pose-21.jpg',
+    label: '全景实拍'
+  },
+  {
+    pattern: /栏杆|扶栏|护栏|桥侧|桥上|桥梁|栈桥|江堤/,
+    image: '/assets/poses/hand-rail.jpg',
+    label: '栏杆实拍'
+  },
+  {
+    pattern: /夜景|灯牌|橱窗|补光|亮灯|灯光|蓝调/,
+    image: '/assets/poses/pose-28.jpg',
+    label: '夜景实拍'
+  },
+  {
+    pattern: /海边|湖岸|水面|江面|河岸|亲水|码头|岸线/,
+    image: '/assets/poses/pose-20.jpg',
+    label: '水边实拍'
+  },
+  {
+    pattern: /山野|山峰|远山|峰林|观景台|远望|草地|云海|沙漠|沙丘|高原|人小景大/,
+    image: '/assets/poses/back-view.jpg',
+    label: '山野实拍'
+  },
+  {
+    pattern: /墙|红墙|门窗|侧身|墙面|建筑立面/,
+    image: '/assets/poses/pose-13.jpg',
+    label: '墙边实拍'
+  },
+  {
+    pattern: /半身|人像|侧脸|回头/,
+    image: '/assets/poses/side-look.jpg',
+    label: '人像实拍'
+  }
+];
+
+function getSceneText(location, spot, guide, defaultGuide) {
+  return [
+    location.name,
+    location.desc,
+    location.tip,
+    location.type,
+    location.time,
+    location.angle,
+    location.direction,
+    location.result,
+    location.stand,
+    location.action,
+    location.cue,
+    guide.angle,
+    guide.direction,
+    guide.result,
+    guide.stand,
+    guide.action,
+    defaultGuide.result,
+    defaultGuide.stand,
+    defaultGuide.action,
+    spot.name,
+    spot.badge
+  ].filter(Boolean).join(' ');
+}
+
+function pickSceneCase(location, spot, guide, defaultGuide) {
+  if (location.caseImage) {
+    return {
+      image: location.caseImage,
+      label: location.caseSourceName || '实拍案例',
+      dedicated: true
+    };
+  }
+
+  const nameText = [location.name, location.type, location.cue].filter(Boolean).join(' ');
+  const nameMatched = SCENE_NAME_CASE_IMAGES.find((item) => item.pattern.test(nameText));
+
+  if (nameMatched) {
+    return {
+      image: nameMatched.image,
+      label: nameMatched.label,
+      dedicated: false
+    };
+  }
+
+  const sceneText = getSceneText(location, spot, guide, defaultGuide);
+  const matched = SCENE_CASE_IMAGES.find((item) => item.pattern.test(sceneText));
+
+  if (matched) {
+    return {
+      image: matched.image,
+      label: matched.label,
+      dedicated: false
+    };
+  }
+
+  return {
+    image: spot.aiExampleImage || spot.coverImage || '/assets/poses/walking-burst.jpg',
+    label: '拍摄参考',
+    dedicated: false
+  };
+}
+
+function parseDistanceKm(distanceText) {
+  const match = String(distanceText || '').match(/([\d.]+)\s*公?里/);
+  return match ? Number(match[1]) : 0;
+}
+
+function splitDistance(totalDistanceKm, count) {
+  if (!totalDistanceKm || count <= 1) return '';
+  const segment = totalDistanceKm / (count - 1);
+  return `${segment.toFixed(1)}km`;
+}
+
+function splitWalkMinutes(totalDistanceKm, count) {
+  if (!totalDistanceKm || count <= 1) return '';
+  const segment = totalDistanceKm / (count - 1);
+  const minutes = Math.max(3, Math.round((segment / 5) * 60));
+  return `${minutes}分钟`;
+}
+
+function parseRouteMeta(spot) {
+  const location = String(spot.location || '');
+  const match = location.match(/（([^，）]+)，([^）]+)）/);
+
+  if (match) {
+    return {
+      distanceText: match[1],
+      durationText: match[2]
+    };
+  }
+
+  return {
+    distanceText: spot.routeDistance || '约 3 公里',
+    durationText: spot.routeDuration || '2.5-3 小时'
+  };
+}
+
+function buildRouteMap(spot) {
+  if (spot.badge !== 'Citywalk') return null;
+
+  const routeMeta = parseRouteMeta(spot);
+  const totalDistanceKm = parseDistanceKm(routeMeta.distanceText);
+  const locations = spot.locations || [];
+  const nodes = locations.map((location, index) => ({
+    no: index + 1,
+    name: String(location.name || '').replace(/^\d+\.\s*/, ''),
+    type: location.type || (index === 0 ? '起点' : (index === locations.length - 1 ? '终点' : '途经点')),
+    desc: location.desc || '',
+    segmentText: index === 0 ? '' : splitDistance(totalDistanceKm, locations.length),
+    segmentTimeText: index === 0 ? '' : splitWalkMinutes(totalDistanceKm, locations.length),
+    side: index % 2 === 0 ? 'left' : 'right'
+  }));
+
+  return {
+    title: `${spot.city} Citywalk 路线图`,
+    start: nodes[0] ? nodes[0].name : spot.city,
+    end: nodes[nodes.length - 1] ? nodes[nodes.length - 1].name : spot.city,
+    distanceText: routeMeta.distanceText,
+    durationText: routeMeta.durationText,
+    stopCount: nodes.length,
+    nodes
+  };
+}
+
 const LOCATION_CASES = {
   西北角楼河岸: {
     angle: '河岸低机位，镜头离水面约 80cm',
@@ -285,13 +537,12 @@ const DEFAULT_GUIDES = {
 };
 
 function enrichSpot(spot) {
-  return {
+  const enriched = {
     ...spot,
     locations: spot.locations.map((location) => {
       const guide = LOCATION_CASES[location.name] || {};
       const defaultGuide = DEFAULT_GUIDES[location.type] || DEFAULT_GUIDES.人像;
-      const caseImage = location.caseImage || spot.aiExampleImage || spot.coverImage || '';
-      const hasDedicatedCaseImage = Boolean(location.caseImage);
+      const sceneCase = pickSceneCase(location, spot, guide, defaultGuide);
       return {
         ...location,
         angle: guide.angle || location.angle || '先找最明显的线条或主体，再决定人物站位',
@@ -305,16 +556,21 @@ function enrichSpot(spot) {
         pose: guide.pose || location.pose || 'small-center',
         cue: guide.cue || location.cue || '看站位示意',
         diagramNote: guide.diagramNote || location.diagramNote || defaultGuide.diagramNote,
-        caseImage,
-        hasCaseImage: Boolean(caseImage),
-        hasDedicatedCaseImage,
-        caseImageCredit: location.caseImageCredit || spot.coverCredit || '',
+        caseImage: sceneCase.image,
+        hasCaseImage: Boolean(sceneCase.image),
+        hasDedicatedCaseImage: sceneCase.dedicated,
+        caseImageCredit: sceneCase.dedicated ? (location.caseImageCredit || spot.coverCredit || '') : '',
         caseSourceName: location.caseSourceName || spot.sourceName || '',
-        caseSourceLabel: location.caseSourceName || (hasDedicatedCaseImage ? '实拍案例' : '参考底图') || '授权实拍',
+        caseSourceLabel: sceneCase.label,
         caseSourceUrl: location.caseSourceUrl || spot.sourceUrl || '',
         caseStyle: `linear-gradient(135deg, ${spot.palette[1]} 0%, ${spot.palette[0]} 52%, ${spot.palette[2]} 100%)`
       };
     })
+  };
+
+  return {
+    ...enriched,
+    routeMap: buildRouteMap(enriched)
   };
 }
 

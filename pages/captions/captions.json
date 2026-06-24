@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "文案广场"
+  "navigationBarTitleText": "文案广场",
+  "backgroundColor": "#f7f2e8",
+  "backgroundColorTop": "#f7f2e8",
+  "backgroundColorBottom": "#f7f2e8"
 }

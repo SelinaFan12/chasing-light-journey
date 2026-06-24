@@ -40,6 +40,10 @@
 4. 如果要部署到自己的小程序，请在 `project.config.json` 中替换为自己的 `appid`。
 5. 编译后即可预览。
 
+## 开发脚本
+
+- `scripts/build-web-data.js`：从小程序数据源导出静态 Web 预览数据到 `web/data.js`。该文件是生成产物，默认不会提交。
+
 ## 云函数和环境变量
 
 项目默认可以只使用本地数据运行。云函数是可选增强：
@@ -47,6 +51,7 @@
 - `cloudfunctions/getSpots`：从云数据库读取审核通过的点位。
 - `cloudfunctions/syncXhsData`：导入授权 POI 或人工采编数据。
 - `cloudfunctions/generateCaption`：调用外部模型生成文案。
+- `cloudfunctions/amapSearch`：通过服务端代理调用高德 Web Service，补充真实 POI 地点。
 
 需要配置的环境变量示例见 [.env.example](.env.example)。不要把真实 API Key、访问令牌或云环境密钥提交到仓库。
 
@@ -66,3 +71,4 @@
 - [数据与 AI 接入计划](docs/data-and-ai-plan.md)
 - [豆包 API 接入清单](docs/doubao-setup-checklist.md)
 - [授权 POI 数据接入说明](docs/xhs-data-integration.md)
+- [高德 API 接入说明](docs/amap-setup.md)

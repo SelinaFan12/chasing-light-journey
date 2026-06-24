@@ -2,6 +2,7 @@ const { spotData } = require('./data');
 
 const CACHE_TTL = 5 * 60 * 1000;
 const CLOUD_TIMEOUT = 8000;
+const DEFAULT_FALLBACK_IMAGE = '/assets/spots/shanghai-bund-ai.jpg';
 
 const AI_FALLBACK_IMAGES = [
   { keywords: ['上海', '外滩'], image: '/assets/spots/shanghai-bund-ai.jpg' },
@@ -71,7 +72,7 @@ function normalizeSpot(spot) {
   const palette = Array.isArray(spot.palette) && spot.palette.length >= 3
     ? spot.palette
     : ['#e8d7b9', '#c06739', '#4b6178'];
-  const aiExampleImage = spot.aiExampleImage || getAiFallbackImage(spot);
+  const aiExampleImage = spot.aiExampleImage || getAiFallbackImage(spot) || DEFAULT_FALLBACK_IMAGE;
   const rawCoverImage = spot.coverKind === 'ai' ? '' : (spot.coverImage || spot.imageUrl || spot.coverUrl || '');
   const aiCoverImage = rawCoverImage ? '' : aiExampleImage;
   const coverImage = rawCoverImage || aiCoverImage;
@@ -171,9 +172,11 @@ function withCover(spot) {
     dataCompletenessText: `${dataCompleteness}%`,
     coverStyle: `linear-gradient(135deg, ${normalized.palette[1]} 0%, ${normalized.palette[0]} 48%, ${normalized.palette[2]} 100%)`,
     searchText: buildSearchText(normalized, displayTags),
-    sourceLabel: normalized.coverKind === 'ai'
+    sourceLabel: normalized.sourcePlatform === 'amap'
+      ? '高德地图'
+      : (normalized.coverKind === 'ai'
       ? '拍摄参考'
-      : (normalized.sourcePlatform === 'xiaohongshu' ? '小红书 POI' : '实例机位')
+      : (normalized.sourcePlatform === 'xiaohongshu' ? '小红书 POI' : '实例机位'))
   };
 }
 
@@ -339,6 +342,12 @@ function getCachedSpots() {
 
 function getSpotById(id) {
   const targetId = String(id);
+  const temporarySpot = wx.getStorageSync(`temporarySpot:${targetId}`);
+
+  if (temporarySpot && !Array.isArray(temporarySpot) && typeof temporarySpot === 'object') {
+    return Promise.resolve(withCover(temporarySpot));
+  }
+
   const found = cachedSpots.find((spot) => String(spot.id) === targetId || String(spot._id) === targetId);
 
   if (found) {
