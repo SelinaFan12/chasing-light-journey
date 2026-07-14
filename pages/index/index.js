@@ -34,12 +34,16 @@ function buildFavoriteMap(favoriteIds) {
 }
 
 function buildCardSpot(spot, favoriteMap, distanceText = '') {
+  const primaryLocation = (spot.locations || [])[0] || {};
+
   return {
     id: spot.id,
     coverImage: spot.coverImage,
     coverStyle: spot.coverStyle,
     archiveNo: spot.archiveNo,
     imageLabel: spot.imageLabel || '拍摄参考',
+    coverCue: primaryLocation.cue || primaryLocation.type || spot.badge,
+    coverLens: primaryLocation.lens || '1x 标准',
     city: spot.city,
     badge: spot.badge,
     name: spot.name,
@@ -51,6 +55,13 @@ function buildCardSpot(spot, favoriteMap, distanceText = '') {
     palette: spot.palette,
     favorited: Boolean(favoriteMap[String(spot.id)])
   };
+}
+
+function splitSpotColumns(spots) {
+  return spots.reduce((columns, spot, index) => {
+    columns[index % 2].push(spot);
+    return columns;
+  }, [[], []]);
 }
 
 const provinces = buildProvinces(initialSpots);
@@ -136,6 +147,7 @@ Page({
     amapLoading: false,
     amapText: '可用高德补充真实地点',
     filteredSpots: initialFilteredSpots,
+    spotColumns: splitSpotColumns(initialFilteredSpots),
     filteredTotal: initialSpots.length,
     remainingCount: Math.max(initialSpots.length - initialFilteredSpots.length, 0),
     visibleLimit: DEFAULT_VISIBLE_LIMIT,
@@ -249,6 +261,45 @@ Page({
     }, 120);
   },
 
+  submitSearch() {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+
+    const query = this.data.keyword.trim().toLowerCase();
+    const nextState = {
+      recommendMode: 'plan',
+      activeTheme: '全部主题',
+      visibleLimit: DEFAULT_VISIBLE_LIMIT
+    };
+
+    if (query) {
+      const cityMatch = this.allSpots.find((spot) => {
+        const city = String(spot.city || '').toLowerCase();
+        return city && (city.includes(query) || query.includes(city));
+      });
+      const provinceMatch = this.allSpots.find((spot) => {
+        const province = String(spot.province || '').toLowerCase();
+        return province && (province.includes(query) || query.includes(province));
+      });
+      const matchedScope = cityMatch || provinceMatch;
+
+      if (matchedScope) {
+        nextState.activeProvince = matchedScope.province || '全部';
+        nextState.activeCity = cityMatch ? cityMatch.city : '全部';
+        nextState.cities = buildCities(this.allSpots, nextState.activeProvince);
+      } else {
+        nextState.activeProvince = '全部';
+        nextState.activeCity = '全部';
+        nextState.cities = buildCities(this.allSpots);
+      }
+    }
+
+    this.setData(nextState);
+    this.filterSpots({ resetLimit: true });
+  },
+
   selectCity(event) {
     this.setData({
       activeCity: event.currentTarget.dataset.city,
@@ -313,6 +364,7 @@ Page({
 
     this.setData({
       filteredSpots,
+      spotColumns: splitSpotColumns(filteredSpots),
       filteredTotal: matchedSpots.length,
       remainingCount: Math.max(matchedSpots.length - filteredSpots.length, 0),
       visibleLimit
@@ -426,5 +478,21 @@ Page({
 
   goCaptions() {
     wx.switchTab({ url: '/pages/captions/captions' });
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '追光旅迹：一起找全国旅行拍照机位',
+      path: '/pages/index/index',
+      imageUrl: '/assets/spots/shanghai-bund-ai.jpg'
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: '追光旅迹：全国旅行拍照机位与姿势指南',
+      query: '',
+      imageUrl: '/assets/spots/shanghai-bund-ai.jpg'
+    };
   }
 });

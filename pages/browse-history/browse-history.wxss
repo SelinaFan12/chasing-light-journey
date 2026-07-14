@@ -30,14 +30,16 @@
 }
 
 .history-card {
-  padding: 18rpx;
+  padding: 16rpx;
   display: grid;
-  grid-template-columns: 170rpx minmax(0, 1fr);
+  grid-template-columns: 168rpx minmax(0, 1fr);
   gap: 18rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
 }
 
 .history-cover {
-  min-height: 214rpx;
+  height: 212rpx;
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #c06739, #e8d7b9 52%, #4b6178);
@@ -55,16 +57,6 @@
   top: 16rpx;
   color: rgba(18, 18, 23, 0.7);
   font-size: 18rpx;
-}
-
-.image-label {
-  position: absolute;
-  left: 12rpx;
-  bottom: 12rpx;
-  padding: 6rpx 10rpx;
-  background: rgba(18, 18, 23, 0.58);
-  color: #f7f0df;
-  font-size: 17rpx;
 }
 
 .history-body {
@@ -92,4 +84,10 @@
 
 .theme-light .history-time {
   color: #80776c;
+}
+
+.theme-light .history-card {
+  border-color: rgba(62, 48, 31, 0.08);
+  background: #fffefa;
+  box-shadow: 0 18rpx 42rpx rgba(62, 48, 31, 0.08);
 }

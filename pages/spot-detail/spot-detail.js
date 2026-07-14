@@ -5,128 +5,139 @@ const { recordSpotView } = require('../../utils/browse-history');
 const SCENE_CASE_IMAGES = [
   {
     pattern: /树荫|树影|梧桐|树下|树林|林荫/,
-    image: '/assets/poses/pose-26.jpg',
-    label: '树荫实拍'
+    images: ['/assets/xhs-examples/tree-portrait.jpg', '/assets/xhs-examples/tree-portrait-v2.jpg'],
+    label: '树荫直拍'
   },
   {
     pattern: /花墙|花丛|花枝|花园|花海/,
-    image: '/assets/poses/foreground-frame.jpg',
-    label: '花墙实拍'
+    images: ['/assets/xhs-examples/foreground-frame.jpg', '/assets/xhs-examples/foreground-frame-v2.jpg'],
+    label: '花墙直拍'
   },
   {
     pattern: /前景|树枝|门洞|窗格|框景/,
-    image: '/assets/poses/foreground-frame.jpg',
-    label: '前景实拍'
+    images: ['/assets/xhs-examples/foreground-frame.jpg', '/assets/xhs-examples/foreground-frame-v2.jpg'],
+    label: '前景直拍'
   },
   {
     pattern: /街巷|街角|慢走|行走|Citywalk|路牌|转角|坡道|老街|小路/,
-    image: '/assets/poses/walking-burst.jpg',
-    label: '街拍实拍'
+    images: ['/assets/xhs-examples/street-walk.jpg', '/assets/xhs-examples/street-walk-v2.jpg'],
+    label: '街巷直拍'
   },
   {
     pattern: /台阶|楼梯|石阶|阶梯|上行/,
-    image: '/assets/poses/seated-space.jpg',
-    label: '台阶实拍'
+    images: ['/assets/xhs-examples/steps-sit.jpg', '/assets/xhs-examples/steps-sit-v2.jpg'],
+    label: '台阶直拍'
   },
   {
     pattern: /夜景|灯牌|橱窗|补光|亮灯|灯光|蓝调/,
-    image: '/assets/poses/pose-28.jpg',
-    label: '夜景实拍'
+    images: ['/assets/xhs-examples/night-fill.jpg', '/assets/xhs-examples/night-fill-v2.jpg'],
+    label: '夜景直拍'
   },
   {
     pattern: /海边|湖岸|水面|江面|河岸|亲水|码头|岸线/,
-    image: '/assets/poses/pose-20.jpg',
-    label: '水边实拍'
+    images: ['/assets/xhs-examples/water-rail.jpg', '/assets/xhs-examples/water-rail-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '水边直拍'
   },
   {
     pattern: /山野|山峰|远山|峰林|观景台|远望|草地|云海|沙漠|沙丘|高原/,
-    image: '/assets/poses/back-view.jpg',
-    label: '山野实拍'
+    image: '/assets/xhs-examples/mountain-wide.jpg',
+    label: '山野直拍'
   },
   {
     pattern: /墙|红墙|门窗|侧身|墙面|建筑立面/,
-    image: '/assets/poses/pose-13.jpg',
-    label: '墙边实拍'
+    images: ['/assets/xhs-examples/wall-halfbody.jpg', '/assets/xhs-examples/wall-halfbody-v2.jpg'],
+    label: '墙边直拍'
   },
   {
     pattern: /天际线|地标|全景|封面|主体完整|城市建筑|广场/,
-    image: '/assets/poses/pose-21.jpg',
-    label: '全景实拍'
+    images: ['/assets/xhs-examples/landmark-wide.jpg', '/assets/xhs-examples/landmark-wide-v2.jpg'],
+    label: '地标直拍'
   },
   {
     pattern: /栏杆|扶栏|护栏|桥侧|桥上|桥梁|栈桥|江堤/,
-    image: '/assets/poses/hand-rail.jpg',
-    label: '栏杆实拍'
+    images: ['/assets/xhs-examples/water-rail.jpg', '/assets/xhs-examples/water-rail-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '栏杆直拍'
   },
   {
     pattern: /半身|人像|侧脸|回头/,
-    image: '/assets/poses/side-look.jpg',
-    label: '人像实拍'
+    images: ['/assets/xhs-examples/wall-halfbody.jpg', '/assets/xhs-examples/wall-halfbody-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '人像直拍'
   }
 ];
 
 const SCENE_NAME_CASE_IMAGES = [
   {
     pattern: /树荫|树影|梧桐|树下|树林|林荫/,
-    image: '/assets/poses/pose-26.jpg',
-    label: '树荫实拍'
+    images: ['/assets/xhs-examples/tree-portrait.jpg', '/assets/xhs-examples/tree-portrait-v2.jpg'],
+    label: '树荫直拍'
   },
   {
     pattern: /花墙|花丛|花枝|花园|花海/,
-    image: '/assets/poses/foreground-frame.jpg',
-    label: '花墙实拍'
+    images: ['/assets/xhs-examples/foreground-frame.jpg', '/assets/xhs-examples/foreground-frame-v2.jpg'],
+    label: '花墙直拍'
   },
   {
     pattern: /前景|树枝|门洞|窗格|框景/,
-    image: '/assets/poses/foreground-frame.jpg',
-    label: '前景实拍'
+    images: ['/assets/xhs-examples/foreground-frame.jpg', '/assets/xhs-examples/foreground-frame-v2.jpg'],
+    label: '前景直拍'
   },
   {
     pattern: /街巷|街角|慢走|行走|Citywalk|路牌|转角|坡道|老街|小路/,
-    image: '/assets/poses/walking-burst.jpg',
-    label: '街拍实拍'
+    images: ['/assets/xhs-examples/street-walk.jpg', '/assets/xhs-examples/street-walk-v2.jpg'],
+    label: '街巷直拍'
   },
   {
     pattern: /台阶|楼梯|石阶|阶梯|上行/,
-    image: '/assets/poses/seated-space.jpg',
-    label: '台阶实拍'
+    images: ['/assets/xhs-examples/steps-sit.jpg', '/assets/xhs-examples/steps-sit-v2.jpg'],
+    label: '台阶直拍'
   },
   {
     pattern: /天际线|地标|全景|封面|主体完整|城市建筑|广场/,
-    image: '/assets/poses/pose-21.jpg',
-    label: '全景实拍'
+    images: ['/assets/xhs-examples/landmark-wide.jpg', '/assets/xhs-examples/landmark-wide-v2.jpg'],
+    label: '地标直拍'
   },
   {
     pattern: /栏杆|扶栏|护栏|桥侧|桥上|桥梁|栈桥|江堤/,
-    image: '/assets/poses/hand-rail.jpg',
-    label: '栏杆实拍'
+    images: ['/assets/xhs-examples/water-rail.jpg', '/assets/xhs-examples/water-rail-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '栏杆直拍'
   },
   {
     pattern: /夜景|灯牌|橱窗|补光|亮灯|灯光|蓝调/,
-    image: '/assets/poses/pose-28.jpg',
-    label: '夜景实拍'
+    images: ['/assets/xhs-examples/night-fill.jpg', '/assets/xhs-examples/night-fill-v2.jpg'],
+    label: '夜景直拍'
   },
   {
     pattern: /海边|湖岸|水面|江面|河岸|亲水|码头|岸线/,
-    image: '/assets/poses/pose-20.jpg',
-    label: '水边实拍'
+    images: ['/assets/xhs-examples/water-rail.jpg', '/assets/xhs-examples/water-rail-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '水边直拍'
   },
   {
     pattern: /山野|山峰|远山|峰林|观景台|远望|草地|云海|沙漠|沙丘|高原|人小景大/,
-    image: '/assets/poses/back-view.jpg',
-    label: '山野实拍'
+    image: '/assets/xhs-examples/mountain-wide.jpg',
+    label: '山野直拍'
   },
   {
     pattern: /墙|红墙|门窗|侧身|墙面|建筑立面/,
-    image: '/assets/poses/pose-13.jpg',
-    label: '墙边实拍'
+    images: ['/assets/xhs-examples/wall-halfbody.jpg', '/assets/xhs-examples/wall-halfbody-v2.jpg'],
+    label: '墙边直拍'
   },
   {
     pattern: /半身|人像|侧脸|回头/,
-    image: '/assets/poses/side-look.jpg',
-    label: '人像实拍'
+    images: ['/assets/xhs-examples/wall-halfbody.jpg', '/assets/xhs-examples/wall-halfbody-v2.jpg', '/assets/xhs-examples/stone-rail-v2.jpg'],
+    label: '人像直拍'
   }
 ];
+
+function stableHash(value) {
+  return String(value || '').split('').reduce((hash, char) => (
+    ((hash << 5) - hash + char.charCodeAt(0)) >>> 0
+  ), 0);
+}
+
+function pickVariant(item, seed) {
+  const images = item.images || [item.image];
+  return images[stableHash(seed) % images.length];
+}
 
 function getSceneText(location, spot, guide, defaultGuide) {
   return [
@@ -155,20 +166,12 @@ function getSceneText(location, spot, guide, defaultGuide) {
 }
 
 function pickSceneCase(location, spot, guide, defaultGuide) {
-  if (location.caseImage) {
-    return {
-      image: location.caseImage,
-      label: location.caseSourceName || '实拍案例',
-      dedicated: true
-    };
-  }
-
   const nameText = [location.name, location.type, location.cue].filter(Boolean).join(' ');
   const nameMatched = SCENE_NAME_CASE_IMAGES.find((item) => item.pattern.test(nameText));
 
   if (nameMatched) {
     return {
-      image: nameMatched.image,
+      image: pickVariant(nameMatched, `${spot.id}-${location.name}`),
       label: nameMatched.label,
       dedicated: false
     };
@@ -179,15 +182,15 @@ function pickSceneCase(location, spot, guide, defaultGuide) {
 
   if (matched) {
     return {
-      image: matched.image,
+      image: pickVariant(matched, `${spot.id}-${location.name}-${location.desc}`),
       label: matched.label,
       dedicated: false
     };
   }
 
   return {
-    image: spot.aiExampleImage || spot.coverImage || '/assets/poses/walking-burst.jpg',
-    label: '拍摄参考',
+    image: '/assets/xhs-examples/street-walk.jpg',
+    label: '直拍参考',
     dedicated: false
   };
 }
@@ -567,7 +570,6 @@ function enrichSpot(spot) {
       };
     })
   };
-
   return {
     ...enriched,
     routeMap: buildRouteMap(enriched)
@@ -653,5 +655,26 @@ Page({
         wx.showToast({ title: '复制失败，请重试', icon: 'none' });
       }
     });
+  },
+
+  onShareAppMessage() {
+    const { spot } = this.data;
+    const title = spot ? `${spot.name}：${spot.city}拍照机位指南` : '追光旅迹：旅行拍照机位指南';
+    const path = spot ? `/pages/spot-detail/spot-detail?id=${spot.id}` : '/pages/index/index';
+
+    return {
+      title,
+      path,
+      imageUrl: spot && spot.coverImage ? spot.coverImage : '/assets/spots/shanghai-bund-ai.jpg'
+    };
+  },
+
+  onShareTimeline() {
+    const { spot } = this.data;
+    return {
+      title: spot ? `${spot.name}：${spot.city}拍照机位指南` : '追光旅迹：全国旅行拍照机位与姿势指南',
+      query: spot ? `id=${spot.id}` : '',
+      imageUrl: spot && spot.coverImage ? spot.coverImage : '/assets/spots/shanghai-bund-ai.jpg'
+    };
   }
 });

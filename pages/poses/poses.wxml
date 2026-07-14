@@ -16,23 +16,23 @@
   </view>
 
   <view class="pose-grid">
-    <view wx:for="{{visiblePoses}}" wx:key="id" class="pose-card panel">
-      <view class="pose-media">
-        <image
-          class="pose-photo"
-          src="{{item.image}}"
-          mode="aspectFit"
-          lazy-load="true"
-        />
-        <view class="pose-photo-shade"></view>
-        <view class="pose-no mono">{{item.no}}</view>
-      </view>
-      <view class="pose-body">
-        <view class="pose-title">{{item.title}}</view>
-        <view class="muted">{{item.desc}}</view>
-        <view class="pose-foot">
-          <text class="mono">{{item.category}}</text>
-          <text>{{item.scene}}</text>
+    <view wx:for="{{poseColumns}}" wx:key="*this" class="pose-column">
+      <view wx:for="{{item}}" wx:for-item="pose" wx:key="id" class="pose-card panel">
+        <view class="pose-media">
+          <image
+            class="pose-photo"
+            src="{{pose.image}}"
+            mode="widthFix"
+            lazy-load="true"
+          />
+        </view>
+        <view class="pose-body">
+          <view class="pose-title">{{pose.title}}</view>
+          <view class="muted">{{pose.desc}}</view>
+          <view class="pose-foot">
+            <text class="mono">{{pose.category}}</text>
+            <text>{{pose.scene}}</text>
+          </view>
         </view>
       </view>
     </view>

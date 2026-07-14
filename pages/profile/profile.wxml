@@ -5,9 +5,23 @@
     <view>
       <view class="eyebrow">TRAVELER FILE</view>
       <view class="display-title">你的拍照<text class="accent">档案</text></view>
-      <view wx:if="{{hasWechatLogin}}" class="muted">{{nickName}}，已登录微信，可分享给好友。</view>
-      <view wx:if="{{!hasWechatLogin}}" class="muted">登录微信后，可以带着你的昵称分享追光地图给好友。</view>
-      <button wx:if="{{!hasWechatLogin}}" class="primary-button login-button" bindtap="loginWithWechat">微信登录</button>
+      <view wx:if="{{hasWechatLogin}}" class="muted">{{nickName}}，已进入本地档案；头像昵称可自行完善。</view>
+      <view wx:if="{{!hasWechatLogin}}" class="muted">进入本地档案后，可以保存收藏和浏览记录；分享给好友不需要登录。</view>
+      <button wx:if="{{!hasWechatLogin}}" class="primary-button login-button" bindtap="loginWithWechat">进入档案</button>
+      <view wx:if="{{hasWechatLogin}}" class="profile-editor">
+        <button class="avatar-picker" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          {{avatarUrl ? '更换头像' : '选择头像'}}
+        </button>
+        <input
+          class="nickname-input"
+          type="nickname"
+          value="{{profileDraftName}}"
+          placeholder="填写昵称"
+          placeholder-class="placeholder"
+          bindinput="onNicknameInput"
+          bindblur="saveNickname"
+        />
+      </view>
     </view>
   </view>
 
@@ -38,7 +52,10 @@
   </view>
 
   <view wx:for="{{favoriteSpots}}" wx:key="id" class="favorite panel" data-id="{{item.id}}" bindtap="openSpot">
-    <view class="mono favorite-no">{{item.archiveNo}}</view>
+    <view class="favorite-cover">
+      <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill"></image>
+      <view wx:else class="mono favorite-no">{{item.archiveNo}}</view>
+    </view>
     <view>
       <view class="sub-title">{{item.name}}</view>
       <view class="muted">{{item.city}} · {{item.badge}}</view>
@@ -66,20 +83,12 @@
       <view class="arrow">→</view>
     </button>
 
-    <button wx:if="{{hasWechatLogin}}" class="action panel share-action" open-type="share">
+    <button class="action panel share-action" open-type="share">
       <view>
         <view class="sub-title">分享给朋友</view>
         <view class="muted">发送追光地图小程序卡片，邀请朋友一起规划拍照路线。</view>
       </view>
       <view class="arrow">↗</view>
-    </button>
-
-    <button wx:if="{{!hasWechatLogin}}" class="action panel share-action" bindtap="loginWithWechat">
-      <view>
-        <view class="sub-title">登录后分享给朋友</view>
-        <view class="muted">先完成微信授权，再发送带昵称的小程序卡片。</view>
-      </view>
-      <view class="arrow">→</view>
     </button>
   </view>
 </view>

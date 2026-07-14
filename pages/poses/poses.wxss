@@ -38,75 +38,76 @@
 }
 
 .pose-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16rpx;
+  display: flex;
+  gap: 18rpx;
+  align-items: start;
+}
+
+.pose-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
 }
 
 .pose-card {
-  min-height: 650rpx;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border-radius: 16rpx;
+  background: #18181d;
+  box-shadow: 0 18rpx 44rpx rgba(0, 0, 0, 0.22);
 }
 
 .pose-media {
   position: relative;
   width: 100%;
-  height: 390rpx;
   overflow: hidden;
   background: #0f0f14;
 }
 
 .pose-photo {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
 }
 
-.pose-photo-shade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(18, 18, 23, 0), rgba(18, 18, 23, 0.28));
-}
-
-.pose-no {
-  position: absolute;
-  left: 18rpx;
-  bottom: 16rpx;
-  color: #f6d789;
-  font-size: 20rpx;
-  text-shadow: 0 4rpx 14rpx rgba(0, 0, 0, 0.35);
-}
-
 .pose-body {
-  min-height: 260rpx;
-  padding: 22rpx;
+  min-height: 230rpx;
+  padding: 18rpx;
   display: flex;
   flex-direction: column;
 }
 
 .pose-title {
-  margin: 0 0 14rpx;
+  margin: 0 0 12rpx;
   color: #f7f0df;
-  font-family: 'Songti SC', serif;
-  font-size: 34rpx;
-  line-height: 1.12;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  font-size: 29rpx;
+  font-weight: 800;
+  line-height: 1.28;
+}
+
+.pose-body .muted {
+  font-size: 21rpx;
+  line-height: 1.45;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .pose-foot {
   margin-top: auto;
-  padding-top: 20rpx;
+  padding-top: 16rpx;
   border-top: 1rpx solid rgba(244, 239, 228, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14rpx;
   color: #aaa399;
-  font-size: 22rpx;
+  font-size: 20rpx;
 }
 
 .pose-foot .mono {
@@ -119,6 +120,12 @@
 
 .theme-light .pose-media {
   background: #eee6da;
+}
+
+.theme-light .pose-card {
+  border-color: rgba(62, 48, 31, 0.08);
+  background: #fffefa;
+  box-shadow: 0 18rpx 42rpx rgba(62, 48, 31, 0.08);
 }
 
 .theme-light .pose-title {

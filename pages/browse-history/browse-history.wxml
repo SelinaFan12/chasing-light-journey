@@ -19,7 +19,6 @@
       <view class="history-cover {{item.coverImage ? 'has-photo' : ''}}">
         <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill"></image>
         <view wx:else class="history-empty mono">{{item.archiveNo}}</view>
-        <view wx:if="{{item.imageLabel}}" class="image-label mono">{{item.imageLabel}}</view>
       </view>
       <view class="history-body">
         <view class="history-meta mono">{{item.city}} · {{item.badge}}</view>

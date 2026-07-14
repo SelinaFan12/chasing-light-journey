@@ -31,13 +31,18 @@
     </view>
     <view class="location-line mono">{{locationText}}</view>
     <view class="search-label mono">SEARCH / CITY FILTER</view>
-    <input
-      class="search-input"
-      value="{{keyword}}"
-      placeholder="搜索景点、城市、路线、标签"
-      placeholder-class="placeholder"
-      bindinput="onSearch"
-    />
+    <view class="search-row">
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="搜索景点、城市、路线、标签"
+        placeholder-class="placeholder"
+        confirm-type="search"
+        bindinput="onSearch"
+        bindconfirm="submitSearch"
+      />
+      <button class="search-button" bindtap="submitSearch">搜索</button>
+    </view>
     <view class="amap-row">
       <view class="amap-text mono">{{amapText}}</view>
       <button
@@ -104,44 +109,44 @@
   </view>
 
   <view class="spot-list">
-    <view
-      wx:for="{{filteredSpots}}"
-      wx:key="id"
-      class="spot-card panel"
-      data-id="{{item.id}}"
-      bindtap="openSpot"
-    >
-      <view class="spot-media {{item.coverImage ? 'has-photo' : ''}}" style="background: {{item.coverStyle}};">
-        <image wx:if="{{item.coverImage}}" class="spot-cover-img" src="{{item.coverImage}}" mode="aspectFill" lazy-load="true"></image>
-        <view wx:if="{{item.coverImage}}" class="spot-cover-shade"></view>
-        <view class="photo-mark mono">{{item.archiveNo}}</view>
-        <view class="photo-caption mono">{{item.imageLabel}}</view>
-      </view>
-      <view class="spot-main">
-        <view class="spot-top">
-          <view>
-            <view class="spot-city mono">{{item.city}} · {{item.badge}}</view>
-            <view class="spot-name">{{item.name}}</view>
-            <view class="source-line mono">{{item.sourceLabel}}</view>
-          </view>
-          <view class="score-box">
-            <view class="score mono">{{item.score}}</view>
-            <view wx:if="{{recommendMode === 'nearby' && item.distanceText}}" class="distance mono">{{item.distanceText}}</view>
-          </view>
+    <view wx:for="{{spotColumns}}" wx:key="*this" class="spot-column">
+      <view
+        wx:for="{{item}}"
+        wx:for-item="spot"
+        wx:key="id"
+        class="spot-card panel"
+        data-id="{{spot.id}}"
+        bindtap="openSpot"
+      >
+        <view class="spot-media {{spot.coverImage ? 'has-photo' : ''}}" style="background: {{spot.coverStyle}};">
+          <image wx:if="{{spot.coverImage}}" class="spot-cover-img" src="{{spot.coverImage}}" mode="aspectFill" lazy-load="true"></image>
         </view>
-        <view class="muted">{{item.summary}}</view>
-        <view class="tag-strip">
-          <view wx:for="{{item.displayTags}}" wx:key="*this" class="mini-tag">{{item}}</view>
-        </view>
-        <view class="spot-foot">
-          <view class="palette">
-            <view wx:for="{{item.palette}}" wx:key="*this" class="swatch" style="background: {{item}};"></view>
+        <view class="spot-main">
+          <view class="spot-top">
+            <view>
+              <view class="spot-city mono">{{spot.city}} · {{spot.badge}}</view>
+              <view class="spot-name">{{spot.name}}</view>
+              <view class="source-line mono">{{spot.sourceLabel}}</view>
+            </view>
+            <view class="score-box">
+              <view class="score mono">{{spot.score}}</view>
+              <view wx:if="{{recommendMode === 'nearby' && spot.distanceText}}" class="distance mono">{{spot.distanceText}}</view>
+            </view>
           </view>
-          <button
-            class="fav {{item.favorited ? 'active' : ''}}"
-            data-id="{{item.id}}"
-            catchtap="toggleFavorite"
-          >{{item.favorited ? '已收藏' : '收藏'}}</button>
+          <view class="muted">{{spot.summary}}</view>
+          <view class="tag-strip">
+            <view wx:for="{{spot.displayTags}}" wx:key="*this" class="mini-tag">{{item}}</view>
+          </view>
+          <view class="spot-foot">
+            <view class="palette">
+              <view wx:for="{{spot.palette}}" wx:key="*this" class="swatch" style="background: {{item}};"></view>
+            </view>
+            <button
+              class="fav {{spot.favorited ? 'active' : ''}}"
+              data-id="{{spot.id}}"
+              catchtap="toggleFavorite"
+            >{{spot.favorited ? '已收藏' : '收藏'}}</button>
+          </view>
         </view>
       </view>
     </view>

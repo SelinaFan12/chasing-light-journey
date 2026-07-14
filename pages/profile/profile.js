@@ -3,6 +3,7 @@ const { getHistory } = require('../../utils/browse-history');
 const { getThemeState, toggleTheme } = require('../../utils/theme');
 
 const USER_KEY = 'wechatUserProfile';
+const DEFAULT_NICK_NAME = '追光旅人';
 
 function getStorageArray(key) {
   const value = wx.getStorageSync(key) || [];
@@ -14,12 +15,24 @@ function getStorageObject(key) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
 }
 
+function normalizeUserProfile(value = {}) {
+  const nickName = typeof value.nickName === 'string' ? value.nickName.trim() : '';
+  const avatarUrl = typeof value.avatarUrl === 'string' ? value.avatarUrl : '';
+
+  return {
+    ...value,
+    nickName,
+    avatarUrl
+  };
+}
+
 Page({
   data: {
     ...getThemeState(),
     hasWechatLogin: false,
     nickName: '',
     avatarUrl: '',
+    profileDraftName: DEFAULT_NICK_NAME,
     favoriteSpots: [],
     records: [
       { value: '0', label: '浏览机位' },
@@ -50,14 +63,15 @@ Page({
   },
 
   getLoginState() {
-    const userProfile = getStorageObject(USER_KEY);
-    const nickName = userProfile && userProfile.nickName ? userProfile.nickName : '';
-    const avatarUrl = userProfile && userProfile.avatarUrl ? userProfile.avatarUrl : '';
+    const userProfile = normalizeUserProfile(getStorageObject(USER_KEY));
+    const nickName = userProfile.nickName || '';
+    const avatarUrl = userProfile.avatarUrl || '';
 
     return {
-      hasWechatLogin: Boolean(nickName),
+      hasWechatLogin: Boolean(userProfile.loginAt || nickName || avatarUrl),
       nickName,
-      avatarUrl
+      avatarUrl,
+      profileDraftName: nickName || DEFAULT_NICK_NAME
     };
   },
 
@@ -78,52 +92,74 @@ Page({
     this.setData(toggleTheme());
   },
 
+  saveUserProfile(patch = {}) {
+    const current = normalizeUserProfile(getStorageObject(USER_KEY));
+    const nickName = typeof patch.nickName === 'string'
+      ? patch.nickName.trim()
+      : current.nickName || DEFAULT_NICK_NAME;
+    const nextProfile = {
+      ...current,
+      ...patch,
+      nickName: nickName || DEFAULT_NICK_NAME,
+      avatarUrl: typeof patch.avatarUrl === 'string' ? patch.avatarUrl : current.avatarUrl || '',
+      loginAt: current.loginAt || Date.now(),
+      updatedAt: Date.now()
+    };
+
+    wx.setStorageSync(USER_KEY, nextProfile);
+    this.setData({
+      hasWechatLogin: true,
+      nickName: nextProfile.nickName,
+      avatarUrl: nextProfile.avatarUrl,
+      profileDraftName: nextProfile.nickName
+    });
+
+    return nextProfile;
+  },
+
   loginWithWechat() {
-    if (!wx.getUserProfile) {
-      wx.showToast({ title: '当前微信版本不支持授权登录', icon: 'none' });
+    const saveLogin = (loginRes = {}) => {
+      this.saveUserProfile({
+        nickName: this.data.profileDraftName || DEFAULT_NICK_NAME,
+        hasLoginCode: Boolean(loginRes.code),
+        loginCodeAt: Date.now()
+      });
+      wx.showToast({ title: '已进入档案', icon: 'success' });
+    };
+
+    if (!wx.login) {
+      saveLogin();
       return;
     }
 
-    wx.getUserProfile({
-      desc: '用于展示分享身份和保存本地拍照档案',
-      success: (profileRes) => {
-        wx.login({
-          success: (loginRes) => {
-            const userProfile = {
-              ...profileRes.userInfo,
-              loginAt: Date.now(),
-              hasLoginCode: Boolean(loginRes.code)
-            };
-
-            wx.setStorageSync(USER_KEY, userProfile);
-            this.setData({
-              hasWechatLogin: true,
-              nickName: userProfile.nickName || '',
-              avatarUrl: userProfile.avatarUrl || ''
-            });
-            wx.showToast({ title: '已登录微信', icon: 'success' });
-          },
-          fail: () => {
-            const userProfile = {
-              ...profileRes.userInfo,
-              loginAt: Date.now(),
-              hasLoginCode: false
-            };
-
-            wx.setStorageSync(USER_KEY, userProfile);
-            this.setData({
-              hasWechatLogin: true,
-              nickName: userProfile.nickName || '',
-              avatarUrl: userProfile.avatarUrl || ''
-            });
-            wx.showToast({ title: '已保存头像昵称', icon: 'success' });
-          }
-        });
-      },
-      fail: () => {
-        wx.showToast({ title: '需要授权后才能分享身份', icon: 'none' });
-      }
+    wx.login({
+      success: saveLogin,
+      fail: () => saveLogin()
     });
+  },
+
+  onChooseAvatar(event) {
+    const avatarUrl = event.detail && event.detail.avatarUrl;
+
+    if (!avatarUrl) {
+      wx.showToast({ title: '未选择头像', icon: 'none' });
+      return;
+    }
+
+    this.saveUserProfile({ avatarUrl });
+    wx.showToast({ title: '头像已更新', icon: 'success' });
+  },
+
+  onNicknameInput(event) {
+    const value = event.detail && typeof event.detail.value === 'string' ? event.detail.value : '';
+    this.setData({ profileDraftName: value });
+  },
+
+  saveNickname(event) {
+    const value = event.detail && typeof event.detail.value === 'string'
+      ? event.detail.value
+      : this.data.profileDraftName;
+    this.saveUserProfile({ nickName: value || DEFAULT_NICK_NAME });
   },
 
   openSpot(event) {
@@ -164,7 +200,7 @@ Page({
     const { nickName } = this.data;
 
     return {
-      title: nickName ? `${nickName} 邀你一起找旅行拍照机位` : '追光地图：一起找全国旅行拍照机位',
+      title: nickName ? `${nickName} 邀你一起找旅行拍照机位` : '追光旅迹：一起找全国旅行拍照机位',
       path: '/pages/index/index',
       imageUrl: '/assets/spots/shanghai-bund-ai.jpg'
     };
@@ -172,7 +208,7 @@ Page({
 
   onShareTimeline() {
     return {
-      title: '追光地图：全国旅行拍照机位与姿势指南',
+      title: '追光旅迹：全国旅行拍照机位与姿势指南',
       query: '',
       imageUrl: '/assets/spots/shanghai-bund-ai.jpg'
     };

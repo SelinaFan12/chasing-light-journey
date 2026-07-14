@@ -22,14 +22,7 @@
   </view>
 
   <view wx:if="{{spot.aiExampleImage}}" class="ai-example panel">
-    <image class="ai-example-bg" src="{{spot.aiExampleImage}}" mode="aspectFill" lazy-load="true"></image>
-    <image class="ai-example-img" src="{{spot.aiExampleImage}}" mode="aspectFit" lazy-load="true"></image>
-    <view class="ai-example-shade"></view>
-    <view class="ai-example-top">
-      <view class="eyebrow">{{spot.aiExampleLabel}}</view>
-      <view class="mono">REFERENCE</view>
-    </view>
-    <view class="ai-example-copy">{{spot.aiExamplePrompt}}</view>
+    <image class="ai-example-img" src="{{spot.aiExampleImage}}" mode="widthFix" lazy-load="true"></image>
   </view>
 
   <view wx:if="{{spot.routeMap}}" class="citywalk-map panel">
@@ -139,14 +132,7 @@
           </view>
         </view>
         <view wx:if="{{item.hasCaseImage}}" class="case-photo">
-          <image class="case-photo-bg" src="{{item.caseImage}}" mode="aspectFill" lazy-load="true"></image>
-          <image class="case-photo-img" src="{{item.caseImage}}" mode="aspectFit" lazy-load="true"></image>
-          <view class="case-photo-shade"></view>
-          <view class="case-photo-top">
-            <view class="case-label mono">{{item.cue}}</view>
-            <view class="case-source mono">{{item.caseSourceLabel}}</view>
-          </view>
-          <view class="case-credit" wx:if="{{item.caseImageCredit}}">Photo: {{item.caseImageCredit}}</view>
+          <image class="case-photo-img" src="{{item.caseImage}}" mode="widthFix" lazy-load="true"></image>
         </view>
         <view class="angle-grid">
           <view>

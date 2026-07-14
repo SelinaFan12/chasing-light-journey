@@ -3,13 +3,21 @@ const { getThemeState } = require('../../utils/theme');
 
 const categories = ['全部', '室内', '街巷', '海边', '山野', '古镇', '夜景', '台阶', '桥梁'];
 
+function splitPoseColumns(poses) {
+  return poses.reduce((columns, pose, index) => {
+    columns[index % 2].push(pose);
+    return columns;
+  }, [[], []]);
+}
+
 Page({
   data: {
     ...getThemeState(),
     categories,
     activeCategory: '全部',
     poses: poseData,
-    visiblePoses: poseData
+    visiblePoses: poseData,
+    poseColumns: splitPoseColumns(poseData)
   },
 
   onShow() {
@@ -22,6 +30,10 @@ Page({
       ? poseData
       : poseData.filter((pose) => pose.category === activeCategory);
 
-    this.setData({ activeCategory, visiblePoses });
+    this.setData({
+      activeCategory,
+      visiblePoses,
+      poseColumns: splitPoseColumns(visiblePoses)
+    });
   }
 });

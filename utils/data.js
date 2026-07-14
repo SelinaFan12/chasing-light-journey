@@ -1143,6 +1143,51 @@ const kindThemeTags = {
   palace: ['文化']
 };
 
+const cityRouteImageOverrides = {
+  北京: {
+    经典地标线: '/assets/spots/beijing-palace-ai.jpg',
+    老街烟火线: '/assets/spots/shanghai-wukang-ai.jpg',
+    Citywalk步行线: '/assets/spots/beijing-cbd-ai.jpg',
+    小众风景线: '/assets/spots/hangzhou-westlake-ai.jpg'
+  },
+  上海: {
+    经典地标线: '/assets/spots/shanghai-bund-ai.jpg',
+    老街烟火线: '/assets/spots/shanghai-wukang-ai.jpg',
+    Citywalk步行线: '/assets/spots/chengdu-taikooli-ai.jpg',
+    小众风景线: '/assets/spots/shenzhen-talent-ai.jpg'
+  },
+  广州: {
+    经典地标线: '/assets/spots/guangzhou-canton-ai.jpg',
+    老街烟火线: '/assets/spots/guangzhou-arcade-ai.jpg',
+    Citywalk步行线: '/assets/spots/chengdu-taikooli-ai.jpg',
+    小众风景线: '/assets/spots/qingdao-seaside-ai.jpg'
+  },
+  南京: {
+    经典地标线: '/assets/spots/nanjing-citywall-ai.jpg',
+    老街烟火线: '/assets/spots/nanjing-qinhuai-ai.jpg',
+    Citywalk步行线: '/assets/spots/shanghai-wukang-ai.jpg',
+    小众风景线: '/assets/spots/hangzhou-westlake-ai.jpg'
+  }
+};
+
+const routeKindImagePools = {
+  city: ['/assets/spots/beijing-cbd-ai.jpg', '/assets/spots/guangzhou-canton-ai.jpg', '/assets/spots/shenzhen-talent-ai.jpg', '/assets/spots/shanghai-bund-ai.jpg'],
+  citywalk: ['/assets/spots/shanghai-wukang-ai.jpg', '/assets/spots/chengdu-taikooli-ai.jpg', '/assets/spots/guangzhou-arcade-ai.jpg', '/assets/spots/shenzhen-talent-ai.jpg'],
+  water: ['/assets/spots/hangzhou-westlake-ai.jpg', '/assets/spots/dali-erhai-ai.jpg', '/assets/spots/qingdao-seaside-ai.jpg', '/assets/spots/guilin-yulong-ai.jpg'],
+  oldtown: ['/assets/spots/shanghai-wukang-ai.jpg', '/assets/spots/suzhou-pingjiang-ai.jpg', '/assets/spots/guangzhou-arcade-ai.jpg', '/assets/spots/lijiang-oldtown-ai.jpg'],
+  mountain: ['/assets/spots/zhangjiajie-peaks-ai.jpg', '/assets/spots/dunhuang-desert-ai.jpg', '/assets/spots/guilin-yulong-ai.jpg', '/assets/spots/xiamen-gulangyu-ai.jpg'],
+  palace: ['/assets/spots/beijing-palace-ai.jpg', '/assets/spots/nanjing-citywall-ai.jpg', '/assets/spots/xian-citywall-ai.jpg', '/assets/spots/luoyang-longmen-ai.jpg']
+};
+
+function pickRouteImage(province, city, kind, globalIndex, routeProfile) {
+  const cityImages = cityRouteImageOverrides[city];
+  if (cityImages && cityImages[routeProfile.suffix]) return cityImages[routeProfile.suffix];
+
+  const pool = routeKindImagePools[kind] || routeKindImagePools.city;
+  const image = pool[globalIndex % pool.length];
+  return image || provinceFallbackImages[province] || '/assets/spots/chengdu-taikooli-ai.jpg';
+}
+
 function getRouteKind(city, province, cityIndex, routeProfile) {
   if (routeProfile.kind) return routeProfile.kind;
   const baseKind = getCityKind(city, province, cityIndex + (routeProfile.kindOffset || 0));
@@ -1153,7 +1198,7 @@ function getRouteKind(city, province, cityIndex, routeProfile) {
 function makeCityCoverageSpot(province, city, cityIndex, globalIndex, routeProfile) {
   const kind = getRouteKind(city, province, cityIndex, routeProfile);
   const coords = cityCoordinates[city] || [30 + (globalIndex % 12), 104 + (globalIndex % 18)];
-  const image = provinceFallbackImages[province] || '/assets/spots/chengdu-taikooli-ai.jpg';
+  const image = pickRouteImage(province, city, kind, globalIndex, routeProfile);
   const archivePrefix = province.slice(0, 2).toUpperCase();
   const name = `${city}${routeProfile.suffix}`;
   const routeTags = routeProfile.tags.concat(kindThemeTags[kind] || []);
@@ -1208,8 +1253,8 @@ const poseGroups = {
     ['拿饮料低头笑', '双手拿杯子放胸前，眼睛看杯沿，表情会更松。', '甜品店/小店', 'drink', 16],
     ['伸手碰光', '手伸向侧上方，脸不要被手挡住，适合光影墙面。', '室内/光影墙', 'reach', 15],
     ['看向画外', '身体正对镜头，眼神看画面外侧，避免证件照感。', '民宿/展馆', 'off-frame', 17],
-    ['靠桌侧坐', '侧坐在桌边，靠近镜头的腿向前伸，手轻放桌沿。', '书店/小店', 'table-sit', 24],
-    ['门框探身', '身体藏在门框后半步，只露肩和脸，眼神看向光源。', '民宿/展厅', 'door-frame', 17],
+    ['靠桌侧坐', '侧坐在桌边，靠近镜头的腿向前伸，手轻放桌沿。', '书店/小店', 'table-sit', 6],
+    ['门框探身', '身体藏在门框后半步，只露肩和脸，眼神看向光源。', '民宿/展厅', 'door-frame', 13],
     ['镜前整理', '一手整理耳饰或头发，另一手自然垂下，别盯镜头。', '酒店/试衣镜', 'mirror', 11],
     ['坐着看窗', '身体侧向窗户，手放膝盖，脸朝窗外留一点侧脸。', '窗边/车厢', 'window-sit', 20],
     ['扶椅回头', '一手搭椅背，身体先转过去，再回头看镜头。', '餐厅/民宿', 'chair-back', 14],
@@ -1243,13 +1288,13 @@ const poseGroups = {
     ['背影入画', '人物占画面 15%-25%，肩线放松，把景点尺度留出来。', '山海/建筑', 'back', 4],
     ['手搭额头远望', '一手搭额头，身体朝风景方向，人物只占画面一角。', '山海/观景台', 'lookout', 23],
     ['背手慢走', '双手背后，步子放小，肩颈放松，适合安静景点。', '园林/湖边', 'hands-back', 26],
-    ['双臂打开', '人小景大时使用，手臂打开但肩膀下沉，画面更舒展。', '山海/草地', 'open-arms', 29],
+    ['双臂打开', '人小景大时使用，手臂打开但肩膀下沉，画面更舒展。', '山海/草地', 'open-arms', 12],
     ['侧身看山线', '身体侧向山脊，前脚点地，脸看远处不要正对镜头。', '山路/草坡', 'mountain-side', 5],
     ['坐石头看远方', '坐在石头边缘，膝盖错开，手轻放腿上。', '溪边/山路', 'stone-sit', 20],
     ['扶背包肩带', '一手扶肩带，另一手自然摆动，像正在徒步停下。', '徒步/林道', 'backpack', 21],
     ['低头看花草', '身体微俯，眼睛看脚边花草，手不要挡脸。', '草地/花田', 'flower-look', 3],
     ['树下回头', '从树荫边缘走出，身体向前，头回看镜头外侧。', '树林/公园', 'tree-back', 1],
-    ['观景台小人', '站在画面下方三分之一处，双手自然垂下，突出远景。', '观景台/山顶', 'tiny-person', 4]
+    ['观景台小人', '站在画面下方三分之一处，双手自然垂下，突出远景。', '观景台/山顶', 'tiny-person', 29]
   ],
   '古镇': [
     ['前景遮挡', '让树枝、门框或花丛挡住画面边缘，人物露出半身。', '园林/街巷', 'foreground', 9],
@@ -1261,11 +1306,11 @@ const poseGroups = {
     ['门洞侧身', '站在门洞边缘，身体侧向光源，脸微微回看。', '门楼/院落', 'gate-side', 17],
     ['石墙扶帽', '一手扶帽沿，另一只手提包，脸转向街巷深处。', '石墙/老街', 'hat-wall', 18],
     ['窗下抬头', '站在窗下抬头看牌匾或窗花，手自然放在身侧。', '木窗/老屋', 'window-up', 23],
-    ['花墙半身', '让花枝挡住画面边缘，脸露出来，肩膀斜一点。', '花墙/园林', 'flower-frame', 9]
+    ['花墙半身', '让花枝挡住画面边缘，脸露出来，肩膀斜一点。', '花墙/园林', 'flower-frame', 15]
   ],
   '夜景': [
     ['夜景侧脸', '脸朝补光或橱窗，身体留给夜景，别正面吃满闪光。', '夜景/灯牌', 'night-face', 28],
-    ['橱窗看光', '身体朝橱窗，脸被店内暖光照亮，眼神看玻璃反光。', '街边/橱窗', 'window-light', 28],
+    ['橱窗看光', '身体朝橱窗，脸被店内暖光照亮，眼神看玻璃反光。', '街边/橱窗', 'window-light', 24],
     ['灯牌下回头', '从灯牌下方走过，头回看镜头，步子放慢。', '灯牌/夜市', 'night-back', 1],
     ['扶栏看夜色', '手轻搭栏杆，身体朝夜景，脸侧向补光方向。', '天桥/江边', 'night-rail', 2],
     ['拿饮料夜拍', '饮料放胸前，脸朝店铺光，避免手机闪光直打。', '夜市/小店', 'night-drink', 16],
@@ -1280,9 +1325,9 @@ const poseGroups = {
     ['台阶回望', '坐高一级台阶，身体侧向镜头，头回看，腿一前一后。', '楼梯/石阶', 'stair-sit', 14],
     ['楼梯侧身上行', '身体沿楼梯走，脸转向光源，线条会把视线带到人。', '台阶/山城', 'stairs-up', 27],
     ['台阶低头整理鞋', '坐在台阶边，低头整理鞋带或裤脚，手部动作更自然。', '石阶/街角', 'shoe', 3],
-    ['扶墙上楼', '一手轻扶墙或扶手，身体沿楼梯方向，脸看向上方光。', '楼梯/巷道', 'wall-stairs', 27],
+    ['扶墙上楼', '一手轻扶墙或扶手，身体沿楼梯方向，脸看向上方光。', '楼梯/巷道', 'wall-stairs', 13],
     ['坐台阶抱膝', '坐高一点，双手轻抱膝盖，背挺直，不要蜷太紧。', '台阶/广场', 'knee-hug', 19],
-    ['斜坐伸腿', '身体侧坐，靠近镜头的腿向前伸，脚尖轻点地。', '楼梯/门口', 'long-leg', 6],
+    ['斜坐伸腿', '身体侧坐，靠近镜头的腿向前伸，脚尖轻点地。', '楼梯/门口', 'long-leg', 5],
     ['回头上台阶', '向上走两步后回头，手自然提包或抓衣摆。', '石阶/古镇', 'look-stairs', 30],
     ['倚扶手侧站', '身体离扶手半步，手轻搭扶手，脚尖一前一后。', '楼梯扶手', 'stair-rail', 2],
     ['坐阶看远处', '坐在台阶一侧，脸看向画面外，给另一侧留空。', '台阶/观景处', 'sit-lookout', 20]
@@ -1302,6 +1347,8 @@ const poseGroups = {
 };
 
 const padPoseNo = (value) => value < 10 ? '0' + value : String(value);
+const getPoseImage = (imageIndex) => `/assets/poses/pose-${padPoseNo(imageIndex)}.jpg`;
+
 const poseData = [];
 Object.keys(poseGroups).forEach((category) => {
   poseGroups[category].forEach(([title, desc, scene, visual, imageIndex]) => {
@@ -1314,7 +1361,7 @@ Object.keys(poseGroups).forEach((category) => {
       desc,
       scene,
       visual,
-      image: '/assets/poses/pose-' + padPoseNo(imageIndex) + '.jpg'
+      image: getPoseImage(imageIndex)
     });
   });
 });
